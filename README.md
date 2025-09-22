@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
@@ -48,3 +49,22 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+=======
+# Number System Converter
+
+This project automates the conversion of numbers between different number systems:
+- Binary (Base 2)
+- Octal (Base 8)
+- Decimal (Base 10)
+- Hexadecimal (Base 16)
+
+## Features
+- Convert from one number system to another
+- Simple and easy-to-use interface
+- Works across multiple platforms (Web, Android, iOS)
+
+## How to Run
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/spc2207-groupof-5/number-system-converter.git
+>>>>>>> 07a35806fd812cb46daae1c2e006a8f8c8f78a5d
