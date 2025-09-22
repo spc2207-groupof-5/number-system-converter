@@ -1,98 +1,179 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function IndexScreen() {
+  const [inputNumber, setInputNumber] = useState("");
+  const [fromBase, setFromBase] = useState("decimal");
+  const [toBase, setToBase] = useState("binary");
+  const [result, setResult] = useState("");
 
-export default function HomeScreen() {
+  const bases: any = {
+    decimal: 10,
+    binary: 2,
+    octal: 8,
+    hexadecimal: 16,
+  };
+
+  const convertNumber = () => {
+    try {
+      const decimalValue = parseInt(inputNumber, bases[fromBase]);
+      if (isNaN(decimalValue)) {
+        setResult(" Invalid input for " + fromBase);
+        return;
+      }
+      const converted =
+        toBase === "decimal"
+          ? decimalValue.toString(10)
+          : decimalValue.toString(bases[toBase]);
+      setResult(converted.toUpperCase());
+    } catch {
+      setResult("⚠️ Conversion error");
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ImageBackground
+      source={require("../../assets/app.jpeg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.card}>
+          <Text style={styles.title}>NUMBER SYSTEM CONVERTER</Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter number"
+            value={inputNumber}
+            onChangeText={setInputNumber}
+            keyboardType="default"
+          />
+
+          <Text style={styles.label}>From:</Text>
+          <View style={styles.pickerBox}>
+            <Picker
+              selectedValue={fromBase}
+              onValueChange={(item) => setFromBase(item)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Decimal" value="decimal" />
+              <Picker.Item label="Binary" value="binary" />
+              <Picker.Item label="Octal" value="octal" />
+              <Picker.Item label="Hexadecimal" value="hexadecimal" />
+            </Picker>
+          </View>
+
+          <Text style={styles.label}>To:</Text>
+          <View style={styles.pickerBox}>
+            <Picker
+              selectedValue={toBase}
+              onValueChange={(item) => setToBase(item)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Decimal" value="decimal" />
+              <Picker.Item label="Binary" value="binary" />
+              <Picker.Item label="Octal" value="octal" />
+              <Picker.Item label="Hexadecimal" value="hexadecimal" />
+            </Picker>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={convertNumber}>
+            <Text style={styles.buttonText}>Convert</Text>
+          </TouchableOpacity>
+
+          {result !== "" && <Text style={styles.result}> RESULT: {result}</Text>}
+        </View>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  background: {
+    flex: 1, 
+    width: "100%",
+    height: "100%",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  card: {
+    backgroundColor: "rgba(255,255,255,0.9)", 
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+    maxWidth: 350,
+    alignSelf: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#2d3436",
+  },
+  label: {
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight: "500",
+    color: "#333",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 12,
+    textAlign: "center",
+    fontSize: 16,
+    backgroundColor: "#fafafa",
+    marginBottom: 10,
+  },
+  pickerBox: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    marginVertical: 5,
+    overflow: "hidden",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: "#0984e3",
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  result: {
+    fontSize: 20,
+    marginTop: 25,
+    textAlign: "center",
+    fontWeight: "700",
+    color: "#00b894",
   },
 });
